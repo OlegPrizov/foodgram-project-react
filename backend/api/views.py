@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework import mixins
-from recepies.models import Tag, Recipe, User
-from .serializers import TagSerializer, RecipeCreateSerializer, RecipeShowSerializer, FollowSerializer
+from recepies.models import Tag, Recipe, User, Ingredient
+from .serializers import TagSerializer, RecipeCreateSerializer, RecipeShowSerializer, FollowSerializer, IngredientShowSerializer
 from rest_framework.pagination import LimitOffsetPagination
 
 class TagViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -22,6 +22,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeCreateSerializer
         return RecipeShowSerializer
 
+class IngredientViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    serializer_class = IngredientShowSerializer
+    queryset = Ingredient.objects.all()
+
 class FollowViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -31,8 +35,5 @@ class FollowViewSet(
     serializer_class = FollowSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return self.request.user.follower.all()
-    
-#    def get_following(self):
-#        following = User.objects.get(pk=)
+    def perform_create(self, serializer):
+        serializer.save(following=User.objects.get(pk=self.request.query_params.get('following')))

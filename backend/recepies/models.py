@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 
 class User(AbstractUser):
+    """Модель юзера"""
     username = models.CharField('Username', max_length=150, unique=True, blank=False, null=False)
     email = models.EmailField('Email', max_length=254, null=False, blank=False)
     first_name = models.CharField('First name', max_length=150, null=False, blank=False)
@@ -15,6 +16,7 @@ class User(AbstractUser):
     ]
 
 class Tag(models.Model):
+    """Тег"""
     name = models.CharField(max_length=200)
     color = models.CharField(max_length=7, null=True)
     slug = models.SlugField(
@@ -30,12 +32,12 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=200) 
     measurement_unit = models.CharField(max_length=200)
-    amount = models.IntegerField(validators=[MinValueValidator(1)])
 
     def __str__(self):
         return self.name
 
 class Recipe(models.Model):
+    """Рецепт"""
     author = models.ForeignKey(
         User, related_name='recepies',
         on_delete=models.CASCADE
@@ -51,21 +53,27 @@ class Recipe(models.Model):
     name = models.CharField(max_length=200)
     cooking_time = models.IntegerField(validators=[MinValueValidator(1)])
     tags = models.ManyToManyField(Tag, through='RecipeTags')
-#    ingridients = models.ForeignKey(
-#        Ingredient,
-#        related_name='recepies',
-#        on_delete=models.CASCADE
-#)
+    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient')
 
     def __str__(self):
         return self.name
 
 class RecipeTags(models.Model):
+    """Связь рецепта и тега"""
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.recipe} {self.tag}'
+
+class RecipeIngredient(models.Model):
+    """Связь рецепта и ингредиента"""
+    recipe = models.ForeignKey(Recipe, related_name='recipe_ingredient', on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, related_name='ingredient_recipe', on_delete=models.CASCADE)
+    amount = models.IntegerField(MinValueValidator(1))
+
+    def __str__(self):
+        return f'{self.recipe} {self.ingredient} {self.amount}'
  
 class Follow(models.Model):
     """Система подписки"""

@@ -1,9 +1,10 @@
 from rest_framework import routers
 from django.contrib import admin
 from django.urls import path, include
-from api.views import TagViewSet, RecipeViewSet, FollowViewSet
+from api.views import TagViewSet, RecipeViewSet, FollowViewSet, IngredientViewSet
 
 router = routers.DefaultRouter()
+router.register(r'ingredients', IngredientViewSet, basename='ingredients')
 router.register(r'tags', TagViewSet, basename='tags')
 router.register(r'recipes', RecipeViewSet, basename='recepies')
 router.register(r'users/(?P<id>\d+)/subscribe', FollowViewSet, basename='users')
