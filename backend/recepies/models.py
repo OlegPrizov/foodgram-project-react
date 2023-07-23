@@ -39,7 +39,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     """Рецепт"""
     author = models.ForeignKey(
-        User, related_name='recepies',
+        User, related_name='recipes',
         on_delete=models.CASCADE
     )
     text = models.TextField(
