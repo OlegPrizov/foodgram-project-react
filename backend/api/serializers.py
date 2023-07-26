@@ -1,10 +1,12 @@
 import re
 import webcolors
-from recepies.models import Tag, Recipe, User, Ingredient, Follow, RecipeTags, RecipeIngredient, Shoplist, Favorite
+from recepies.models import Tag, Recipe, User, Ingredient, RecipeTags, RecipeIngredient, Shoplist, Favorite
+from users.models import Follow
 import base64
 from rest_framework import serializers
 from django.core.files.base import ContentFile
 from rest_framework.validators import UniqueTogetherValidator
+from users.serializers import NewUserSerializer
 
 class FollowingDefault:
     requires_context = True
@@ -174,20 +176,20 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def update(self, recipe, validated_data):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
+        RecipeIngredient.objects.filter(recipe=recipe).delete()
         self.add_ingredients(ingredients, recipe)
         recipe.tags.set(tags)
-#        return super().update(recipe, validated_data)
-        return RecipeShowSerializer(recipe, context=self.context).data
+        return super().update(recipe, validated_data)
 
 
 class RecipeShowSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
+    author = NewUserSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
-#    ingredients = IngredientCreateSerializer(source = 'recipe_ingredient', many=True)
     ingredients = serializers.SerializerMethodField()
     image = Base64ImageField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
+    image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         fields = (
@@ -269,8 +271,10 @@ class FollowShowSerializer(serializers.ModelSerializer):
     
     def get_recipes(self, obj):
         recipes = obj.recipes.all()
+        recipes_limit = self.context.get('request').query_params.get('recipes_limit')
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
         return RecipeFollowShowSerializer(recipes, many=True).data
     
     def get_recipes_count(self, obj):
         return obj.recipes.count()
-

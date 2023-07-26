@@ -1,37 +1,39 @@
 from django.contrib import admin
 
-from .models import Tag, User, Ingredient, Recipe
+from .models import Tag, Ingredient, Recipe
+from recepies.models import Favorite
+
 
 class TagAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'name',
         'color',
         'slug'
     )
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = (
-        'email',
-        'username',
-        'first_name',
-        'last_name',
-        'password'
-    )
-
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'name',
         'measurement_unit'
     )
+    list_filter = ('name',)
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
+        'name',
         'author',
-        'text',
-        'name'
+        'favorite_count'
     )
+    list_filter = ('author', 'name', 'tags',)
+
+    def favorite_count(self, obj):
+        return Favorite.objects.filter(recipe=obj).count()
+    
+    favorite_count.short_description = 'Добавлений в избранное'
 
 admin.site.register(Tag, TagAdmin)
-admin.site.register(User, UserAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)

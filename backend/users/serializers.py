@@ -1,16 +1,15 @@
-import re
-import webcolors
-from recepies.models import Tag, Recipe, User, Ingredient, Follow, RecipeTags, RecipeIngredient, Shoplist, Favorite
-import base64
 from rest_framework import serializers
-from django.core.files.base import ContentFile
-from rest_framework.validators import UniqueTogetherValidator
+from djoser.serializers import UserCreateSerializer
+from .models import User, Follow
 
-class UserCreateSerializer(serializers.ModelSerializer):
+
+class UserCreateSerializer(UserCreateSerializer):
+    """Создание пользователя"""
 
     class Meta:
         fields = (
             'email',
+            'id',
             'username',
             'first_name',
             'last_name',
@@ -19,6 +18,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
 
 class NewUserSerializer(serializers.ModelSerializer):
+    """Новое отображение пользователя"""
+
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -35,4 +36,6 @@ class NewUserSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         """Подписан ли текущий пользователь на этого"""
         user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
         return Follow.objects.filter(user=user, following=obj).exists()
