@@ -1,13 +1,21 @@
 from recepies.models import Recipe, Ingredient
 from django_filters import rest_framework as filters
 
+
 class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
     pass
 
+
 class RecipeFilter(filters.FilterSet):
-    is_favorited = filters.BooleanFilter(method='get_favorite')
-    is_in_shopping_cart = filters.BooleanFilter(method='get_is_in_shopping_cart')
-    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
+    is_favorited = filters.BooleanFilter(
+        method='get_favorite'
+    )
+    is_in_shopping_cart = filters.BooleanFilter(
+        method='get_is_in_shopping_cart'
+    )
+    tags = filters.AllValuesMultipleFilter(
+        field_name='tags__slug'
+    )
 
     class Meta:
         model = Recipe
@@ -27,6 +35,7 @@ class RecipeFilter(filters.FilterSet):
             return Recipe.objects.filter(
                 item__user=self.request.user
             )
+
 
 class IngredientFilter(filters.FilterSet):
     name = filters.CharFilter(field_name='name', lookup_expr='istartswith')

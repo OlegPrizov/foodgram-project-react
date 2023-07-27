@@ -17,6 +17,7 @@ class UserCreateSerializer(UserCreateSerializer):
         )
         model = User
 
+
 class NewUserSerializer(serializers.ModelSerializer):
     """Новое отображение пользователя"""
 
@@ -32,7 +33,7 @@ class NewUserSerializer(serializers.ModelSerializer):
             'is_subscribed'
         )
         model = User
-    
+
     def get_is_subscribed(self, obj):
         """Подписан ли текущий пользователь на этого"""
         user = self.context.get('request').user

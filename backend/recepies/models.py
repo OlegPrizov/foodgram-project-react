@@ -1,7 +1,7 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import MinValueValidator
 from users.models import User
+
 
 class Tag(models.Model):
     """Тег"""
@@ -23,17 +23,18 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+
 
 class Ingredient(models.Model):
     """Ингредиент"""
     name = models.CharField(
         'Название',
         max_length=200
-    ) 
+    )
     measurement_unit = models.CharField(
         'Единица измерения',
         max_length=200
@@ -41,10 +42,11 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+
 
 class Recipe(models.Model):
     """Рецепт"""
@@ -77,7 +79,7 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
-        through='RecipeIngredient', 
+        through='RecipeIngredient',
         verbose_name='Ингредиенты'
     )
 
@@ -88,6 +90,7 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class RecipeTags(models.Model):
     """Связь рецепта и тега"""
@@ -104,6 +107,7 @@ class RecipeTags(models.Model):
 
     def __str__(self):
         return f'{self.recipe} {self.tag}'
+
 
 class RecipeIngredient(models.Model):
     """Связь рецепта и ингредиента"""
@@ -127,6 +131,7 @@ class RecipeIngredient(models.Model):
     def __str__(self):
         return f'{self.recipe} {self.ingredient} {self.amount}'
 
+
 class Favorite(models.Model):
     """Система избранного"""
     user = models.ForeignKey(
@@ -143,7 +148,8 @@ class Favorite(models.Model):
     )
 
     def __str__(self):
-        return f'Пользователь {self.user} добавил рецепт «{self.recipe}» в избранное'
+        return f'{self.user} добавил рецепт «{self.recipe}» в избранное'
+
 
 class Shoplist(models.Model):
     """Корзина"""
@@ -161,4 +167,4 @@ class Shoplist(models.Model):
     )
 
     def __str__(self):
-        return f'Пользователь {self.user} добавил рецепт «{self.recipe}» в корзину'
+        return f'{self.user} добавил рецепт «{self.recipe}» в корзину'

@@ -12,6 +12,7 @@ class TagAdmin(admin.ModelAdmin):
         'slug'
     )
 
+
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
@@ -19,6 +20,7 @@ class IngredientAdmin(admin.ModelAdmin):
         'measurement_unit'
     )
     list_filter = ('name',)
+
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
@@ -31,8 +33,9 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def favorite_count(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
-    
+
     favorite_count.short_description = 'Добавлений в избранное'
+
 
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
