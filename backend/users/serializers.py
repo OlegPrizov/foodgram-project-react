@@ -84,7 +84,7 @@ class FollowShowSerializer(serializers.ModelSerializer):
         recipes = obj.recipes.all()
         recipes_limit = self.context.get(
             'request'
-            ).query_params.get(
+        ).query_params.get(
             'recipes_limit'
         )
         if recipes_limit:
