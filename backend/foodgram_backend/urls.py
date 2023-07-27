@@ -1,14 +1,14 @@
-from rest_framework import routers
-from django.contrib import admin
-from django.urls import path, include
-from recepies.views import (
-    TagViewSet, RecipeViewSet,
-    IngredientViewSet,
-    fav_recipe, add_delete_shopcart
-)
-from users.views import follow, FollowListViewsSet
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
+
+from recepies.views import (IngredientViewSet, RecipeViewSet, TagViewSet,
+                            add_delete_shopcart, fav_recipe)
+
+from rest_framework import routers
+
+from users.views import FollowListViewsSet, follow
 
 router = routers.DefaultRouter()
 router.register(r'ingredients', IngredientViewSet, basename='ingredients')
@@ -35,7 +35,6 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    import debug_toolbar
 
     urlpatterns += static(
         settings.MEDIA_URL,
