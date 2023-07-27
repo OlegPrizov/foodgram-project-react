@@ -1,12 +1,16 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.generics import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from .models import User, Follow
+
+from rest_framework import mixins, permissions, status, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from .serializers import FollowShowSerializer
+
 from utils.pagination import CustomPagination
+
+from .models import Follow, User
+from .serializers import FollowShowSerializer
+
 
 @api_view(['POST', 'DELETE'])
 @permission_classes([permissions.IsAuthenticated])
@@ -30,7 +34,7 @@ def follow(request, pk):
         serializer = FollowShowSerializer(
             to_serializer,
             context={'request': request},
-            many = True
+            many=True
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'DELETE':

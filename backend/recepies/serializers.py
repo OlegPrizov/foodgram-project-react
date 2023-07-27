@@ -1,11 +1,14 @@
 import base64
 import re
 
-import webcolors
 from django.core.files.base import ContentFile
+
 from rest_framework import serializers
+
 from users.models import User
 from users.serializers import NewUserSerializer
+
+import webcolors
 
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient, Shoplist,
                      Tag)
