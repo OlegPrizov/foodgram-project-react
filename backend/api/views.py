@@ -1,30 +1,27 @@
-from rest_framework import mixins, permissions, status, viewsets
-from rest_framework.generics import get_object_or_404
-from recepies.models import Tag, Recipe, Ingredient, Favorite, Shoplist
-from users.models import User, Follow
-from .serializers import (
-    TagSerializer, RecipeCreateSerializer,
-    RecipeShowSerializer, IngredientShowSerializer,
-    FollowShowSerializer, RecipeFollowShowSerializer
-)
-from .pagination import CustomPagination
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from django.http import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist
-from .permissions import IsAuthorOrReadOnlyPermission, IsAdminOrReadOnly
-from django_filters.rest_framework import DjangoFilterBackend
-from utils.functions import count_ingredients
-from .filters import RecipeFilter, IngredientFilter
-from rest_framework.decorators import action
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfbase import pdfmetrics
-
-from django.http import FileResponse
 import io
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import FileResponse, HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
+from recepies.models import Favorite, Ingredient, Recipe, Shoplist, Tag
 from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
+from rest_framework import mixins, permissions, status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from users.models import Follow, User
+from utils.functions import count_ingredients
+
+from .filters import IngredientFilter, RecipeFilter
+from .pagination import CustomPagination
+from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
+from .serializers import (FollowShowSerializer, IngredientShowSerializer,
+                          RecipeCreateSerializer, RecipeFollowShowSerializer,
+                          RecipeShowSerializer, TagSerializer)
 
 
 class TagViewSet(

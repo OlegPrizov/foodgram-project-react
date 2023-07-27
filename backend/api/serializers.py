@@ -1,17 +1,12 @@
-import re
-import webcolors
-from recepies.models import (
-    Tag,
-    Recipe,
-    Ingredient,
-    RecipeIngredient,
-    Shoplist,
-    Favorite
-)
-from users.models import Follow, User
 import base64
-from rest_framework import serializers
+import re
+
+import webcolors
 from django.core.files.base import ContentFile
+from recepies.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                             Shoplist, Tag)
+from rest_framework import serializers
+from users.models import Follow, User
 from users.serializers import NewUserSerializer
 
 
