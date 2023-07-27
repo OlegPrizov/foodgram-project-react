@@ -1,9 +1,7 @@
 import io
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import FileResponse, HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from recepies.models import Favorite, Ingredient, Recipe, Shoplist, Tag
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
@@ -13,14 +11,15 @@ from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from users.models import Follow, User
+from users.models import User
+from users.serializers import RecipeFollowShowSerializer
 from utils.functions import count_ingredients
+from utils.pagination import CustomPagination
 
 from .filters import IngredientFilter, RecipeFilter
-from .pagination import CustomPagination
+from .models import Favorite, Ingredient, Recipe, Shoplist, Tag
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
-from .serializers import (FollowShowSerializer, IngredientShowSerializer,
-                          RecipeCreateSerializer, RecipeFollowShowSerializer,
+from .serializers import (IngredientShowSerializer, RecipeCreateSerializer,
                           RecipeShowSerializer, TagSerializer)
 
 
@@ -56,7 +55,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
-        pdfmetrics.registerFont(TTFont('FreeSans', './api/FreeSans.ttf'))
+        pdfmetrics.registerFont(TTFont('FreeSans', './utils/FreeSans.ttf'))
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
         textob = c.beginText()
@@ -88,56 +87,6 @@ class IngredientViewSet(
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     permission_classes = (IsAdminOrReadOnly,)
-
-
-@api_view(['POST', 'DELETE'])
-@permission_classes([permissions.IsAuthenticated])
-def follow(request, pk):
-    user = get_object_or_404(User, username=request.user.username)
-    following = get_object_or_404(User, pk=pk)
-
-    if request.method == 'POST':
-        if user.id == following.id:
-            return Response(
-                'Нельзя подписаться на самого себя',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        elif Follow.objects.filter(user=user, following=following).exists():
-            return Response(
-                'Вы уже подписаны на этого пользователя',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        Follow.objects.create(user=user, following=following)
-        to_serializer = User.objects.filter(username=following)
-        serializer = FollowShowSerializer(
-            to_serializer,
-            context={'request': request},
-            many = True
-        )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    if request.method == 'DELETE':
-        try:
-            subscription = Follow.objects.get(user=user, following=following)
-        except ObjectDoesNotExist:
-            return Response(
-                'Вы не подписаны на этого пользователя',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        subscription.delete()
-        return HttpResponse(
-            'Вы отписались от пользователя',
-            status=status.HTTP_204_NO_CONTENT
-        )
-
-
-class FollowListViewsSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = FollowShowSerializer
-    queryset = User.objects.all()
-    pagination_class = CustomPagination
-
-    def get_queryset(self):
-        user = self.request.user
-        return User.objects.filter(following__user=user)
 
 
 @api_view(['POST', 'DELETE'])

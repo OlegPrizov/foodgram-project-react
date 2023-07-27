@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from recepies.models import Ingredient, Recipe
+from .models import Ingredient, Recipe
 
 
 class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):

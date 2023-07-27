@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'rest_framework.authtoken',
-    'api',
     'recepies',
     'users'
 ]

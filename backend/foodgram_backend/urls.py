@@ -1,11 +1,12 @@
 from rest_framework import routers
 from django.contrib import admin
 from django.urls import path, include
-from api.views import (
+from recepies.views import (
     TagViewSet, RecipeViewSet,
-    IngredientViewSet, FollowListViewsSet,
-    fav_recipe, follow, add_delete_shopcart
+    IngredientViewSet,
+    fav_recipe, add_delete_shopcart
 )
+from users.views import follow, FollowListViewsSet
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -36,7 +37,6 @@ urlpatterns = [
 if settings.DEBUG:
     import debug_toolbar
 
-    urlpatterns += (path('__debug__/', include(debug_toolbar.urls)),)
     urlpatterns += static(
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
