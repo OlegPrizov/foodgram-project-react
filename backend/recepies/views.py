@@ -60,11 +60,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).order_by('ingredient__name')
         return pdf_making(ingredients)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=['post'],
+        permission_classes=[IsAuthenticated]
+    )
     def favorite(self, request, pk):
         return data_aggregartion(FavoriteSerializer, pk=pk, request=request)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=['post'],
+        permission_classes=[IsAuthenticated]
+    )
     def shopping_cart(self, request, pk):
         return data_aggregartion(ShopListSerializer, pk=pk, request=request)
 
