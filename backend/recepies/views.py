@@ -1,5 +1,7 @@
 from django.db.models import F, Sum
+
 from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -8,6 +10,7 @@ from rest_framework.response import Response
 
 from utils.functions import data_aggregartion, pdf_making
 from utils.pagination import CustomPagination
+
 from .filters import IngredientFilter, RecipeFilter
 from .models import (
     Favorite, Ingredient,
@@ -47,13 +50,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
         ingredients = RecipeIngredient.objects.filter(
-            recipe__shoplist__user=self.request.user
-            ).values(
+            recipe__shoplist__user=self.request.user).values(
                 ingredient_name=F('ingredient__name'),
                 measurement_unit=F('ingredient__measurement_unit')
-            ).annotate(
-                amount=Sum('amount')
-            ).values_list(
+            ).annotate(amount=Sum('amount')).values_list(
                 'ingredient__name',
                 'ingredient__measurement_unit',
                 'amount'

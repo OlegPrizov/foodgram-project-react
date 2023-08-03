@@ -1,13 +1,13 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-import webcolors
-
 from drf_extra_fields.fields import Base64ImageField
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from users.serializers import NewUserSerializer
+
+import webcolors
 
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient, Shoplist,
                      Tag)
