@@ -3,10 +3,6 @@ from django_filters import rest_framework as filters
 from .models import Ingredient, Recipe
 
 
-class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
-    pass
-
-
 class RecipeFilter(filters.FilterSet):
     is_favorited = filters.BooleanFilter(
         method='get_favorite'
@@ -29,12 +25,12 @@ class RecipeFilter(filters.FilterSet):
 
     def get_favorite(self, queryset, name, value):
         if value:
-            return queryset.filter(fav__user=self.request.user)
+            return queryset.filter(favorite__user=self.request.user)
 
     def get_is_in_shopping_cart(self, queryset, name, value):
         if value:
             return Recipe.objects.filter(
-                item__user=self.request.user
+                shoplist__user=self.request.user
             )
 
 

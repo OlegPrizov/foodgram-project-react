@@ -9,7 +9,9 @@ class Command(BaseCommand):
     help = 'Loading ingredients data from CSV file.'
 
     def handle(self, *args, **options):
-        with open("../data/ingredients.csv", encoding='utf-8') as ingredients:
+        with open('../data/ingredients.csv', encoding='utf-8') as ingredients:
             file_reader = csv.reader(ingredients, delimiter=",")
-            for row in file_reader:
-                Ingredient.objects.create(name=row[0], measurement_unit=row[1])
+            print('Загрузка началась')
+            for name, measurement_unit in file_reader:
+                Ingredient.objects.get_or_create(name=name, measurement_unit=measurement_unit)
+            print('Загрузка закончилась')

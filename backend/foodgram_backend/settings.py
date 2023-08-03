@@ -2,13 +2,17 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-!-eh=3vgm52sz+sl^6min*$k=1k!8o#90^rflhb=m_m%tqgim6'
+SECRET_KEY = os.getenv('SECRET_KEY', 'default_value')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -17,7 +21,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'rest_framework',
     'django_filters',
     'corsheaders',
@@ -36,7 +39,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'foodgram_backend.urls'
@@ -59,12 +61,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if os.getenv('DEVELOPMENT'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DB', 'django'),
+            'USER': os.getenv('POSTGRES_USER', 'django'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+            'HOST': os.getenv('DB_HOST', ''),
+            'PORT': os.getenv('DB_PORT', 5432)
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -123,11 +137,9 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
     'SERIALIZERS': {
-        'user_create': 'users.serializers.UserCreateSerializer',
         'user': 'users.serializers.NewUserSerializer',
         'current_user': 'users.serializers.NewUserSerializer',
     },
-    'USER_ID_FIELD': 'id',
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.AllowAny'],
     }

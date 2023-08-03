@@ -1,10 +1,15 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
-from recepies.models import Favorite
-
-from .models import Ingredient, Recipe, Tag
+from .models import Ingredient, Recipe, RecipeIngredient, Tag
 
 
+class IngredientInline(admin.TabularInline):
+    model = RecipeIngredient
+    min_num = 1
+
+
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
@@ -14,6 +19,7 @@ class TagAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
@@ -23,21 +29,30 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name',)
 
 
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
         'name',
         'author',
+        'image',
+        'ingredients_data',
         'favorite_count'
     )
     list_filter = ('author', 'name', 'tags',)
+    inlines = [IngredientInline]
 
+    @admin.display(description='Добавлений в избранное')
     def favorite_count(self, obj):
-        return Favorite.objects.filter(recipe=obj).count()
+        return obj.favorite.count()
 
-    favorite_count.short_description = 'Добавлений в избранное'
+    @admin.display(description='Ингредиенты')
+    def ingredients_data(self, obj):
+        ingredients = obj.ingredients.all()
+        data = []
+        for ingredient in ingredients:
+            data.append(f'{ingredient.name}')
+        return data
 
-
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Recipe, RecipeAdmin)
+    def image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="80" height="60">')
