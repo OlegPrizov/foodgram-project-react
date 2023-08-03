@@ -1,5 +1,3 @@
-import csv
-
 from django.core.management.base import BaseCommand
 
 from recepies.models import Tag
@@ -10,11 +8,12 @@ data = [
     ('Салаты', '#00cc66', 'salads'),
 ]
 
+
 class Command(BaseCommand):
     help = 'Loading tags.'
 
     def handle(self, *args, **options):
-            print('Загрузка началась')
-            for name, color, slug in data:
-                Tag.objects.get_or_create(name=name, color=color, slug=slug)
-            print('Загрузка закончилась')
+        print('Загрузка началась')
+        for name, color, slug in data:
+            Tag.objects.get_or_create(name=name, color=color, slug=slug)
+        print('Загрузка закончилась')

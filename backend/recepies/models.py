@@ -159,7 +159,7 @@ class RecipeIngredient(models.Model):
                 32767,
                 'Укажите менее большое значение.'
             )
-            ],
+        ],
         verbose_name='Количество'
     )
 

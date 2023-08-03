@@ -1,8 +1,9 @@
+from recepies.models import Recipe
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Follow, User
-from recepies.models import Recipe
 
 
 class NewUserSerializer(serializers.ModelSerializer):
@@ -25,8 +26,8 @@ class NewUserSerializer(serializers.ModelSerializer):
         """Подписан ли текущий пользователь на этого"""
         request = self.context.get('request')
         return (
-            request.user.is_authenticated and
-            obj.following.filter(user=request.user).exists()
+            request.user.is_authenticated
+            and obj.following.filter(user=request.user).exists()
         )
 
 

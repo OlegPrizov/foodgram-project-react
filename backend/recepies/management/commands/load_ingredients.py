@@ -13,5 +13,8 @@ class Command(BaseCommand):
             file_reader = csv.reader(ingredients, delimiter=",")
             print('Загрузка началась')
             for name, measurement_unit in file_reader:
-                Ingredient.objects.get_or_create(name=name, measurement_unit=measurement_unit)
+                Ingredient.objects.get_or_create(
+                    name=name,
+                    measurement_unit=measurement_unit
+                )
             print('Загрузка закончилась')
