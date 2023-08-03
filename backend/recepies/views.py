@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from utils.functions import data_aggregartion, pdf_making
@@ -53,26 +53,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
             recipe__shoplist__user=self.request.user).values(
                 ingredient_name=F('ingredient__name'),
                 measurement_unit=F('ingredient__measurement_unit')
-            ).annotate(amount=Sum('amount')).values_list(
-                'ingredient__name',
-                'ingredient__measurement_unit',
-                'amount'
-            ).order_by('ingredient__name')
+        ).annotate(amount=Sum('amount')).values_list(
+            'ingredient__name',
+            'ingredient__measurement_unit',
+            'amount'
+        ).order_by('ingredient__name')
         return pdf_making(ingredients)
 
-    @action(
-            detail=True,
-            methods=['post'],
-            permission_classes=[permissions.IsAuthenticated]
-        )
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def favorite(self, request, pk):
         return data_aggregartion(FavoriteSerializer, pk=pk, request=request)
 
-    @action(
-            detail=True,
-            methods=['post'],
-            permission_classes=[permissions.IsAuthenticated]
-        )
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def shopping_cart(self, request, pk):
         return data_aggregartion(ShopListSerializer, pk=pk, request=request)
 
