@@ -85,8 +85,8 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
         validators=[
-            MinValueValidator(1, message='Укажите число больше нуля'),
-            MaxValueValidator(MAX_VALIDATOR, message='Укажите число меньше')
+            MinValueValidator(1, message='Укажите число больше нуля.'),
+            MaxValueValidator(MAX_VALIDATOR, message='Укажите число меньше.')
         ]
     )
     tags = models.ManyToManyField(
