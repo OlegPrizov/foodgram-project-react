@@ -19,7 +19,7 @@ services:
       - media:/app/media
   frontend:
     env_file: .env
-    image: olegprizov/foodgram_frontentd
+    image: olegprizov/foodgram_frontend
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static:/frontend_static
