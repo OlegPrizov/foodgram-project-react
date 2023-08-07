@@ -86,7 +86,7 @@ class Recipe(models.Model):
         'Время приготовления',
         validators=[
             MinValueValidator(1, message='Укажите число больше нуля.'),
-            MaxValueValidator(MAX_VALIDATOR, message='Укажите число меньше.')
+            MaxValueValidator(MAX_VALIDATOR, message='Укажите число меньше')
         ]
     )
     tags = models.ManyToManyField(
