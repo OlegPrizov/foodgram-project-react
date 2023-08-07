@@ -2,8 +2,6 @@ name: Main Foodgram Workflow
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   checkout-and-print-tree:
