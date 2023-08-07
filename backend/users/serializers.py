@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 from .models import Follow, User
 from recipes.models import Recipe
 
+
 class NewUserSerializer(serializers.ModelSerializer):
     """Новое отображение пользователя"""
 

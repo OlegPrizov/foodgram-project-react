@@ -9,6 +9,7 @@ from .models import (Favorite, Ingredient, Recipe, RecipeIngredient, Shoplist,
                      Tag)
 from utils.constants import MAX_VALIDATOR
 
+
 class Hex2NameColor(serializers.Field):
     """Вспомогательный сериализатор для цвета тега."""
 
@@ -76,7 +77,7 @@ class AddIngredientInRecipeSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField(
         validators=[
             MinValueValidator(1, message='Укажите число больше нуля.'),
-            MaxValueValidator(MAX_VALIDATOR, message='Укажите меньшее значение.')
+            MaxValueValidator(MAX_VALIDATOR, message='Укажите число меньше.')
         ])
 
     class Meta:
@@ -100,7 +101,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     cooking_time = serializers.IntegerField(
         validators=[
             MinValueValidator(1, message='Укажите число больше нуля.'),
-            MaxValueValidator(32767, message='Укажите меньшее значение.')
+            MaxValueValidator(32767, message='Укажите число меньше.')
         ])
 
     class Meta:
@@ -118,7 +119,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             ingredient_data = ingredient.get('id')
             amount_data = ingredient.get('amount')
-            bulk_ingredients.append(RecipeIngredient(recipe = recipe, ingredient=ingredient_data, amount=amount_data))
+            bulk_ingredients.append(RecipeIngredient(
+                recipe=recipe,
+                ingredient=ingredient_data,
+                amount=amount_data
+            ))
         RecipeIngredient.objects.bulk_create(bulk_ingredients)
 
     def create(self, validated_data):

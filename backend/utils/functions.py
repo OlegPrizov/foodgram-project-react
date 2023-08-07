@@ -21,7 +21,9 @@ def pdf_making(objects):
     for object in objects:
         print(object)
         data.append(str(
-            f'{object["ingredient_name"]}, {object["measurement_unit"]}, {object["amount"]}'
+            (f'{object["ingredient_name"]}, '
+             f'{object["measurement_unit"]}, '
+             f'{object["amount"]}')
         ))
     for line in data:
         textob.textLine(line)
