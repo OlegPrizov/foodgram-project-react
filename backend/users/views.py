@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from utils.pagination import CustomPagination
-
 from .models import Follow, User
 from .serializers import FollowSerializer, FollowShowSerializer
 
@@ -18,16 +17,12 @@ class FollowView(APIView):
             data={'user': request.user.id, 'following': id},
             context={'request': request}
         )
-        print(self.request.user)
-        print(User.objects.get(id=id))
-        if serializer.is_valid():
-            serializer.save()
-            print(Follow.objects.all())
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, requets, id):
-        follow = get_object_or_404(Follow)
-        follow.delete()
+        get_object_or_404(Follow, id=id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

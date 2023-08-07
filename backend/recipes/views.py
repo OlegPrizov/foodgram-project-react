@@ -1,7 +1,5 @@
 from django.db.models import F, Sum
-
 from django_filters.rest_framework import DjangoFilterBackend
-
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -10,7 +8,6 @@ from rest_framework.response import Response
 
 from utils.functions import data_aggregartion, pdf_making
 from utils.pagination import CustomPagination
-
 from .filters import IngredientFilter, RecipeFilter
 from .models import (
     Favorite, Ingredient,
@@ -53,11 +50,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             recipe__shoplist__user=self.request.user).values(
                 ingredient_name=F('ingredient__name'),
                 measurement_unit=F('ingredient__measurement_unit')
-        ).annotate(amount=Sum('amount')).values_list(
-            'ingredient__name',
-            'ingredient__measurement_unit',
-            'amount'
-        ).order_by('ingredient__name')
+        ).annotate(amount=Sum('amount')).order_by('ingredient__name')
         return pdf_making(ingredients)
 
     @action(
@@ -78,16 +71,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
-        recipe = Recipe.objects.get(id=pk)
-        fav = get_object_or_404(Favorite, user=request.user, recipe=recipe)
-        fav.delete()
+        recipe = get_object_or_404(Recipe, id=pk)
+        get_object_or_404(Favorite, user=request.user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
-        shop = get_object_or_404(Shoplist, user=request.user, recipe=recipe)
-        shop.delete()
+        get_object_or_404(Shoplist, user=request.user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

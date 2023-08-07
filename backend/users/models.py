@@ -37,7 +37,7 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('-username',)
         verbose_name = 'Пользователь',
         verbose_name_plural = 'Пользователи'
 
@@ -68,8 +68,8 @@ class Follow(models.Model):
                 name='unique_follow'
             ),
             CheckConstraint(
-                check=~models.Q(user=models.F("following")),
-                name="prevent_self_follow"
+                check=~models.Q(user=models.F('following')),
+                name='prevent_self_follow'
             ),
         ]
 

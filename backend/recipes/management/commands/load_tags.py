@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from recepies.models import Tag
+from recipes.models import Tag
 
 data = [
     ('Десерты', '#cc6699', 'desserts'),

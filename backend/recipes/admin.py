@@ -48,11 +48,8 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='Ингредиенты')
     def ingredients_data(self, obj):
-        ingredients = obj.ingredients.all()
-        data = []
-        for ingredient in ingredients:
-            data.append(f'{ingredient.name}')
-        return data
+        ingredients = list(obj.ingredients.all())
+        return ingredients
 
     def image(self, obj):
         return mark_safe(f'<img src={obj.image.url} width="80" height="60">')

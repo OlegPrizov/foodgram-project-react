@@ -1,13 +1,11 @@
 import io
 
 from django.http import FileResponse
-
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
-
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -21,8 +19,9 @@ def pdf_making(objects):
     textob.setFont('FreeSans', 14)
     data = []
     for object in objects:
+        print(object)
         data.append(str(
-            f'{object[0]} {object[2]} {object[1]}'
+            f'{object["ingredient_name"]}, {object["measurement_unit"]}, {object["amount"]}'
         ))
     for line in data:
         textob.textLine(line)
@@ -39,6 +38,6 @@ def data_aggregartion(serializer, pk, request):
         'recipe': pk
     }
     pre_serializer = serializer(data=data, context={'request': request})
-    if pre_serializer.is_valid():
-        pre_serializer.save()
+    pre_serializer.is_valid(raise_exception=True)
+    pre_serializer.save()
     return Response(pre_serializer.data, status=status.HTTP_201_CREATED)

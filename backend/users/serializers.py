@@ -1,10 +1,8 @@
-from recepies.models import Recipe
-
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Follow, User
-
+from recipes.models import Recipe
 
 class NewUserSerializer(serializers.ModelSerializer):
     """Новое отображение пользователя"""
@@ -50,10 +48,6 @@ class FollowShowSerializer(NewUserSerializer):
     class Meta:
         model = User
         fields = NewUserSerializer.Meta.fields + ('recipes', 'recipes_count')
-
-    def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        return Follow.objects.filter(user=user, following=obj).exists()
 
     def get_recipes(self, obj):
         recipes = obj.recipes.all()

@@ -5,8 +5,7 @@ from django.db import models
 from django.db.models import UniqueConstraint
 
 from users.models import User
-
-from utils.constants import RECIPE_APPM_MAX_LENGTH
+from utils.constants import RECIPE_APPM_MAX_LENGTH, MAX_VALIDATOR
 
 
 class Tag(models.Model):
@@ -14,7 +13,7 @@ class Tag(models.Model):
 
     name = models.CharField(
         'Название',
-        max_length=200
+        max_length=RECIPE_APPM_MAX_LENGTH
     )
     color = ColorField(
         'Цвет',
@@ -87,7 +86,7 @@ class Recipe(models.Model):
         'Время приготовления',
         validators=[
             MinValueValidator(1, message='Укажите число больше нуля.'),
-            MaxValueValidator(32767, message='Укажите менее большое значение.')
+            MaxValueValidator(MAX_VALIDATOR, message='Укажите менее большое значение.')
         ]
     )
     tags = models.ManyToManyField(
@@ -156,7 +155,7 @@ class RecipeIngredient(models.Model):
                 1,
                 message='Введите число больше нуля.'
             ), MaxValueValidator(
-                32767,
+                MAX_VALIDATOR,
                 'Укажите менее большое значение.'
             )
         ],

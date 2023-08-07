@@ -1,17 +1,13 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
-
 from drf_extra_fields.fields import Base64ImageField
-
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-
-from users.serializers import NewUserSerializer
-
 import webcolors
 
+from users.serializers import NewUserSerializer
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient, Shoplist,
                      Tag)
-
+from utils.constants import MAX_VALIDATOR
 
 class Hex2NameColor(serializers.Field):
     """Вспомогательный сериализатор для цвета тега."""
@@ -80,7 +76,7 @@ class AddIngredientInRecipeSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField(
         validators=[
             MinValueValidator(1, message='Укажите число больше нуля.'),
-            MaxValueValidator(32767, message='Укажите меньшее значение.')
+            MaxValueValidator(MAX_VALIDATOR, message='Укажите меньшее значение.')
         ])
 
     class Meta:
@@ -118,17 +114,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def add_ingredients(ingredients, recipe):
+        bulk_ingredients = []
         for ingredient in ingredients:
             ingredient_data = ingredient.get('id')
             amount_data = ingredient.get('amount')
-            RecipeIngredient.objects.bulk_create(
-                [
-                    RecipeIngredient(
-                        recipe=recipe,
-                        ingredient=ingredient_data,
-                        amount=amount_data)
-                ]
-            )
+            bulk_ingredients.append(RecipeIngredient(recipe = recipe, ingredient=ingredient_data, amount=amount_data))
+        RecipeIngredient.objects.bulk_create(bulk_ingredients)
 
     def create(self, validated_data):
         author = self.context.get('request').user

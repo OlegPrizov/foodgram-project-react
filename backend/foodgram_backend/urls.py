@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urls = [
-    path('', include('recepies.urls')),
+    path('', include('recipes.urls')),
     path('', include('users.urls')),
 ]
 
