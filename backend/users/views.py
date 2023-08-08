@@ -22,7 +22,7 @@ class FollowView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, requets, id):
-        get_object_or_404(Follow, id=id).delete()
+        get_object_or_404(Follow, pk=id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
