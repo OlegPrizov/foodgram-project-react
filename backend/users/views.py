@@ -12,17 +12,21 @@ from .serializers import FollowSerializer, FollowShowSerializer
 class FollowView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, id):
+    def post(self, request, pk):
         serializer = FollowSerializer(
-            data={'user': request.user.id, 'following': id},
+            data={'user': request.user.id, 'following': pk},
             context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def delete(self, requets, id):
-        get_object_or_404(Follow).delete()
+    def delete(self, request, id):
+        get_object_or_404(
+            Follow,
+            user=request.user.id,
+            following=id
+        ).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

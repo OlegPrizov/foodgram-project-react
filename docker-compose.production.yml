@@ -28,7 +28,7 @@ services:
   gateway:
     image: olegprizov/foodgram_gateway
     volumes:
-      - ../docs/:/usr/share/nginx/html/api/docs/
+      - ./docs/:/usr/share/nginx/html/api/docs/
       - static:/staticfiles/
       - media:/media
     ports:
