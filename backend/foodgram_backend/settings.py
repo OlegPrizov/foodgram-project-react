@@ -157,4 +157,4 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-CSRF_TRUSTED_ORIGINS = os.getenv('ALLOWED_HOSTS', default='*').split(',')
+CSRF_TRUSTED_ORIGINS = ["http://51.250.20.212", "foodgram-naprimerrr.ddns.net"]
