@@ -12,9 +12,9 @@ from .serializers import FollowSerializer, FollowShowSerializer
 class FollowView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, pk):
+    def post(self, request, id):
         serializer = FollowSerializer(
-            data={'user': request.user.id, 'following': pk},
+            data={'user': request.user.id, 'following': id},
             context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
