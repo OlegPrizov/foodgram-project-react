@@ -82,9 +82,11 @@ Development = True #если переменная отсутсвует, буде
 
 ## Развернутый проект:
 
-http://51.250.20.212/
+https://foodgram-naprimerrr.ddns.net/
 
 ## Документация API Foodgram:
+
+https://foodgram-naprimerrr.ddns.net/api/docs/
 
 ## Об авторе:
 
