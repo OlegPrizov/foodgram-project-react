@@ -78,7 +78,8 @@ DB_PORT=5432
 SECRET_KEY = <ваш SECRET_KEY>
 ALLOWED_HOSTS = 127.0.0.1,localhost,<ваш IP>
 DEBUG = True/False #выберите нужное
-Development = True #если переменная отсутсвует, будет использоваться MySQL, а не PostgreSQL
+CSRF_TRUSTED_ORIGINS = <ваш IP-адрес или домен в формате http://<IP> или http://<DOMEN>>
+DEVELOPMENT = True #если переменная отсутсвует, будет использоваться MySQL, а не PostgreSQL
 
 ## Развернутый проект:
 
