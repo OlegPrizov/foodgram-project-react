@@ -13,7 +13,6 @@ class UserAdmin(BaseUserAdmin):
         'email',
         'first_name',
         'last_name',
-        'password',
         'recipes_count',
         'followers_count'
     )

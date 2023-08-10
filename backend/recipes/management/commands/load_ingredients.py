@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with open('./data/ingredients.csv', encoding='utf-8') as ingredients:
-            file_reader = csv.reader(ingredients, delimiter=",")
+            file_reader = csv.reader(ingredients, delimiter=',')
             print('Загрузка началась')
             for name, measurement_unit in file_reader:
                 Ingredient.objects.get_or_create(

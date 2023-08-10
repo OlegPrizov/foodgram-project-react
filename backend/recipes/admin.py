@@ -37,6 +37,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'image',
         'ingredients_data',
+        'tags',
         'favorite_count'
     )
     list_filter = ('author', 'name', 'tags',)
@@ -48,8 +49,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='Ингредиенты')
     def ingredients_data(self, obj):
-        ingredients = list(obj.ingredients.all())
-        return ingredients
+        return list(obj.ingredients.all())
 
     def image(self, obj):
         return mark_safe(f'<img src={obj.image.url} width="80" height="60">')

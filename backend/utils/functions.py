@@ -17,9 +17,9 @@ def pdf_making(objects):
     textob = c.beginText()
     textob.setTextOrigin(inch, inch)
     textob.setFont('FreeSans', 14)
+    canvas.setTitle('СПИСОК ПОКУПОК')
     data = []
     for object in objects:
-        print(object)
         data.append(str(
             (f'{object["ingredient_name"]}, '
              f'{object["measurement_unit"]}, '

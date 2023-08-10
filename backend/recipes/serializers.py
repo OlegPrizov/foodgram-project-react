@@ -101,7 +101,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     cooking_time = serializers.IntegerField(
         validators=[
             MinValueValidator(1, message='Укажите число больше нуля.'),
-            MaxValueValidator(32767, message='Укажите число меньше.')
+            MaxValueValidator(MAX_VALIDATOR, message='Укажите число меньше.')
         ])
 
     class Meta:
@@ -115,16 +115,14 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def add_ingredients(ingredients, recipe):
-        bulk_ingredients = []
-        for ingredient in ingredients:
-            ingredient_data = ingredient.get('id')
-            amount_data = ingredient.get('amount')
-            bulk_ingredients.append(RecipeIngredient(
+        ingredients_list = [
+            RecipeIngredient(
                 recipe=recipe,
-                ingredient=ingredient_data,
-                amount=amount_data
-            ))
-        RecipeIngredient.objects.bulk_create(bulk_ingredients)
+                ingredient=ingredient['id'],
+                amount=ingredient['amount']
+            ) for ingredient in ingredients
+        ]
+        RecipeIngredient.objects.bulk_create(ingredients_list)
 
     def create(self, validated_data):
         author = self.context.get('request').user

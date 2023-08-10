@@ -26,6 +26,9 @@ services:
     volumes:
       - static:/frontend_static
   gateway:
+    depends_on:
+      - backend
+      - frontend
     image: olegprizov/foodgram_gateway
     volumes:
       - ./docs/:/usr/share/nginx/html/api/docs/
