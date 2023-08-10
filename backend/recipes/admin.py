@@ -1,11 +1,16 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Ingredient, Recipe, RecipeIngredient, Tag
+from .models import Ingredient, Recipe, RecipeIngredient, RecipeTags, Tag
 
 
 class IngredientInline(admin.TabularInline):
     model = RecipeIngredient
+    min_num = 1
+
+
+class TagInline(admin.TabularInline):
+    model = RecipeTags
     min_num = 1
 
 
@@ -35,13 +40,13 @@ class RecipeAdmin(admin.ModelAdmin):
         'pk',
         'name',
         'author',
-        'image',
+        'get_image',
         'ingredients_data',
-        'tags',
+        'tags_data',
         'favorite_count'
     )
     list_filter = ('author', 'name', 'tags',)
-    inlines = [IngredientInline]
+    inlines = [IngredientInline, TagInline]
 
     @admin.display(description='Добавлений в избранное')
     def favorite_count(self, obj):
@@ -51,5 +56,10 @@ class RecipeAdmin(admin.ModelAdmin):
     def ingredients_data(self, obj):
         return list(obj.ingredients.all())
 
-    def image(self, obj):
+    @admin.display(description='Теги')
+    def tags_data(self, obj):
+        return list(obj.tags.all())
+
+    @admin.display(description='Фото')
+    def get_image(self, obj):
         return mark_safe(f'<img src={obj.image.url} width="80" height="60">')
