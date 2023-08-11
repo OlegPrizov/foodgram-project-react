@@ -17,7 +17,7 @@ def pdf_making(objects):
     textob = c.beginText()
     textob.setTextOrigin(inch, inch)
     textob.setFont('FreeSans', 14)
-    canvas.setTitle('СПИСОК ПОКУПОК')
+    c.setTitle('СПИСОК ПОКУПОК')
     data = []
     for object in objects:
         data.append(str(
